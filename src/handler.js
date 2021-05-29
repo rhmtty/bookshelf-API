@@ -2,38 +2,16 @@ const { nanoid } = require('nanoid');
 const books = require('./books');
 
 const addBookHandler = (request, h) => {
-  const {
-    name,
-    year,
-    author,
-    summary,
-    publisher,
-    pageCount,
-    readPage,
-    reading,
-  } = request.payload;
+  const data = request.payload;
   const id = nanoid(16);
-  const finished = pageCount === readPage ? true : false;
+  const finished = data.pageCount === data.readPage ? true : false;
   const insertedAt = new Date().toISOString();
   const updatedAt = insertedAt;
 
-  const newBook = {
-    id,
-    name,
-    year,
-    author,
-    summary,
-    publisher,
-    pageCount,
-    readPage,
-    finished,
-    reading,
-    insertedAt,
-    updatedAt,
-  };
+  const newBook = { ...data, id, finished, insertedAt, updatedAt };
 
   // Kode untuk meng-handle apabila nama tidak di isi oleh client
-  if (name === undefined) {
+  if (data.name === undefined) {
     const response = h.response({
       status: 'fail',
       message: 'Gagal menambahkan buku. Mohon isi nama buku',
@@ -44,7 +22,7 @@ const addBookHandler = (request, h) => {
   }
 
   //   Kode untuk meng-handle bila Client melampirkan nilai properti readPage yang lebih besar dari nilai properti pageCount
-  if (readPage > pageCount) {
+  if (data.readPage > data.pageCount) {
     const response = h.response({
       status: 'fail',
       message:
@@ -85,17 +63,29 @@ const addBookHandler = (request, h) => {
 };
 
 const getAllBooksHandler = (request, h) => {
-  // const { name } = request.query
-  // const book = books.filter(b => b.id === id)
+  const { name, reading, finished } = request.query
+  let filteredBooks = books
+  
+  if(name !== undefined) {
+    filteredBooks = filteredBooks.filter(book => book.name.toLowerCase().includes(name.toLowerCase()))
+  }
 
+  if(reading !== undefined) {
+    filteredBooks = filteredBooks.filter(book => book.reading === reading)
+  }
+  
+  if(finished !== undefined) {
+    filteredBooks = filteredBooks.filter(book => book.finished === finished)
+  }
+  
   const response = h.response({
     status: 'success',
     data: {
-      books: books.map(book => ({
-        id: book.id,
-        name: book.name,
-        publisher: book.publisher
-      }))
+      books: filteredBooks.map((book) => ({
+      id: book.id,
+      name: book.name,
+      publisher: book.publisher,
+    }))
     },
   });
   response.code(200);
