@@ -71,11 +71,11 @@ const getAllBooksHandler = (request, h) => {
   }
 
   if(reading !== undefined) {
-    filteredBooks = filteredBooks.filter(book => book.reading === reading)
+    filteredBooks = filteredBooks.filter(book => book.reading === true)
   }
   
   if(finished !== undefined) {
-    filteredBooks = filteredBooks.filter(book => book.finished === finished)
+    filteredBooks = filteredBooks.filter(book => book.finished === true)
   }
   
   const response = h.response({
