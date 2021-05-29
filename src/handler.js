@@ -75,9 +75,9 @@ const getAllBooksHandler = (request, h) => {
   }
   
   if(finished !== undefined) {
-    filteredBooks = filteredBooks.filter(book => book.finished === true)
+    filteredBooks = filteredBooks.filter(book => book.finished === (finished === '1'))
   }
-  
+
   const response = h.response({
     status: 'success',
     data: {
