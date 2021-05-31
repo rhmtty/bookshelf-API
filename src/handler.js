@@ -8,7 +8,9 @@ const addBookHandler = (request, h) => {
   const insertedAt = new Date().toISOString();
   const updatedAt = insertedAt;
 
-  const newBook = { ...data, id, finished, insertedAt, updatedAt };
+  const newBook = {
+    ...data, id, finished, insertedAt, updatedAt,
+  };
 
   // Kode untuk meng-handle apabila nama tidak di isi oleh client
   if (data.name === undefined) {
@@ -63,29 +65,29 @@ const addBookHandler = (request, h) => {
 };
 
 const getAllBooksHandler = (request, h) => {
-  const { name, reading, finished } = request.query
-  let filteredBooks = books
-  
-  if(name !== undefined) {
-    filteredBooks = filteredBooks.filter(book => book.name.toLowerCase().includes(name.toLowerCase()))
+  const { name, reading, finished } = request.query;
+  let filteredBooks = books;
+
+  if (name !== undefined) {
+    filteredBooks = filteredBooks.filter((book) => book.name.toLowerCase().includes(name.toLowerCase()));
   }
 
-  if(reading !== undefined) {
-    filteredBooks = filteredBooks.filter(book => book.reading === true)
+  if (reading !== undefined) {
+    filteredBooks = filteredBooks.filter((book) => book.reading === true);
   }
-  
-  if(finished !== undefined) {
-    filteredBooks = filteredBooks.filter(book => book.finished === (finished === '1'))
+
+  if (finished !== undefined) {
+    filteredBooks = filteredBooks.filter((book) => book.finished === (finished === '1'));
   }
 
   const response = h.response({
     status: 'success',
     data: {
       books: filteredBooks.map((book) => ({
-      id: book.id,
-      name: book.name,
-      publisher: book.publisher,
-    }))
+        id: book.id,
+        name: book.name,
+        publisher: book.publisher,
+      })),
     },
   });
   response.code(200);
@@ -105,7 +107,7 @@ const getBookByIdHandler = (request, h) => {
       },
     });
     response.code(200);
-    
+
     return response;
   }
 
@@ -123,7 +125,7 @@ const editBookByIdHandler = (request, h) => {
   const data = request.payload;
   const updateAt = new Date().toISOString();
   const index = books.findIndex((book) => book.id === bookId);
-  const book = { ...data, updateAt }
+  const book = { ...data, updateAt };
 
   if (data.name === undefined) {
     const response = h.response({
@@ -148,12 +150,12 @@ const editBookByIdHandler = (request, h) => {
   if (index !== -1) {
     books[index] = {
       ...books[index],
-      ...book
+      ...book,
     };
-  } else{
+  } else {
     const response = h.response({
-      status: "fail",
-      message: "Gagal memperbarui buku. Id tidak ditemukan",
+      status: 'fail',
+      message: 'Gagal memperbarui buku. Id tidak ditemukan',
     });
     response.code(404);
 
